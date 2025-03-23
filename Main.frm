@@ -1,3 +1,102 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+class MainForm:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Console")  # Titre de la fenêtre
+        self.root.geometry("1200x800")  # Taille de la fenêtre
+
+        # Créer un Notebook (MultiPage en VBA)
+        self.notebook = ttk.Notebook(root)
+        self.notebook.pack(fill="both", expand=True)
+
+        # Onglet 1 : Global
+        self.tab_global = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_global, text="Global")
+
+        # Onglet 2 : Rappels
+        self.tab_rappels = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_rappels, text="Rappels")
+
+        # Ajouter des contrôles à l'onglet Global
+        self.create_global_tab()
+
+        # Ajouter des contrôles à l'onglet Rappels
+        self.create_rappels_tab()
+
+    def create_global_tab(self):
+        # Exemple de contrôle : Label
+        label_global = tk.Label(self.tab_global, text="Onglet Global")
+        label_global.pack(pady=10)
+
+        # Exemple de contrôle : ComboBox
+        self.combo_action_global = ttk.Combobox(self.tab_global, values=["Appel", "Mail", "Proposition"])
+        self.combo_action_global.pack(pady=10)
+
+        # Exemple de contrôle : Button
+        btn_enregistrer = tk.Button(self.tab_global, text="Enregistrer", command=self.btn_enregistrer_click)
+        btn_enregistrer.pack(pady=10)
+
+    def create_rappels_tab(self):
+        # Exemple de contrôle : ListBox
+        self.listbox_rappels = tk.Listbox(self.tab_rappels)
+        self.listbox_rappels.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Exemple de contrôle : Button
+        btn_quitter = tk.Button(self.tab_rappels, text="Quitter", command=self.btn_quitter_click)
+        btn_quitter.pack(pady=10)
+
+    def btn_enregistrer_click(self):
+        # Exemple de gestion d'événement
+        selected_action = self.combo_action_global.get()
+        messagebox.showinfo("Info", f"Action sélectionnée : {selected_action}")
+
+    def btn_quitter_click(self):
+        # Fermer l'application
+        self.root.quit()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MainForm(root)
+    root.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VERSION 5.00
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} Main 
+   Caption         =   "Console"
+   ClientHeight    =   11445
+   ClientLeft      =   120
+   ClientTop       =   465
+   ClientWidth     =   23295
+   OleObjectBlob   =   "Main.frx":0000
+   StartUpPosition =   1  'CenterOwner
+End
+Attribute VB_Name = "Main"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
 
 
 
@@ -14,37 +113,38 @@ TextBox_Searsh.Visible = True
 End Sub
 
 Private Sub btn_enregistrer_Click()
-    ' Déclarer les variables
+    ' D�clarer les variables
     Dim ws As Worksheet
     Dim derniereLigne As Long
     Dim valeur1 As String
     Dim valeur2 As String
     Dim valeur3 As String
     
-
+    ' D�finir la feuille "Database"
     Set ws = ThisWorkbook.Sheets("Database")
-
+    
+    ' Trouver la derni�re ligne remplie dans le tableau (colonne C)
     derniereLigne = ws.Cells(ws.Rows.Count, 3).End(xlUp).Row + 1
     
-   
+    ' V�rifier si la derni�re ligne est en dessous de la ligne 10
     If derniereLigne < 10 Then
-        derniereLigne = 10 
+        derniereLigne = 10 ' Commencer � la ligne 10 si le tableau est vide
     End If
     
- 
+    ' R�cup�rer les valeurs des zones de texte
     valeur1 = Me.TextBox1.value
     valeur2 = Me.TextBox2.value
     valeur3 = Me.TextBox3.value
     
-  
+    ' Enregistrer les valeurs dans le tableau (colonnes C, D, E)
     ws.Cells(derniereLigne, 3).value = valeur1
     ws.Cells(derniereLigne, 4).value = valeur2
     ws.Cells(derniereLigne, 5).value = valeur3
     
     ' Afficher un message de confirmation
-    MsgBox "Les données ont été enregistrées avec succès !", vbInformation
+    MsgBox "Les donn�es ont �t� enregistr�es avec succ�s !", vbInformation
     
-    ' Effacer les zones de texte après enregistrement
+    ' Effacer les zones de texte apr�s enregistrement
     Me.TextBox1.value = ""
     Me.TextBox2.value = ""
     Me.TextBox3.value = ""
@@ -59,22 +159,22 @@ End Sub
 
 
 Private Sub Combo_Action_Global_Change()
-On Error GoTo ErrorHandler 
+On Error GoTo ErrorHandler ' Activer la gestion des erreurs
 
-   
+    ' V�rifier si un �l�ment est s�lectionn� dans ComboBox1
     If Me.Combo_Action_Global.ListIndex = -1 Then
         Exit Sub
     End If
 
-
+    ' R�cup�rer la valeur s�lectionn�e dans ComboBox1
     Dim selectedValue As String
     selectedValue = Me.Combo_Action_Global.value
 
- 
+    ' Acc�der � la feuille "Console"
     Dim wsConsole As Worksheet
     Set wsConsole = ThisWorkbook.Sheets("Console")
 
-  
+    ' Mettre � jour la cellule G35
     wsConsole.Range("H35").value = selectedValue
     wsConsole.Range("G35").value = "Suivie"
     wsConsole.Range("E35").value = Label_NumFiche.Caption
@@ -82,7 +182,7 @@ On Error GoTo ErrorHandler
     Exit Sub
 
 ErrorHandler:
-    '
+    ' Gestion des erreurs
     MsgBox "Une erreur s'est produite : " & Err.Description, vbCritical, "Erreur"
 End Sub
 
@@ -95,6 +195,7 @@ Private Sub Combo_Action_Nouveau_Change()
  Dim wsConsole As Worksheet
     Set wsConsole = ThisWorkbook.Sheets("Console")
 
+    ' Mettre � jour la cellule G35
     wsConsole.Range("H35").value = selectedValue
     wsConsole.Range("G35").value = "Suivie"
     wsConsole.Range("E35").value = Label_NumFiche.Caption
@@ -144,25 +245,28 @@ Else
 Frame_Global_Rappel.Visible = False
 End If
 
-On Error GoTo ErrorHandler '
+On Error GoTo ErrorHandler ' Activer la gestion des erreurs
 
-    
+    ' V�rifier si un �l�ment est s�lectionn� dans ComboBox1
     If Me.Combo_Resume_Global.ListIndex = -1 Then
         Exit Sub
     End If
 
+    ' R�cup�rer la valeur s�lectionn�e dans ComboBox1
     Dim selectedValue As String
     selectedValue = Me.Combo_Resume_Global.value
 
+    ' Acc�der � la feuille "Console"
     Dim wsConsole As Worksheet
     Set wsConsole = ThisWorkbook.Sheets("Console")
 
+    ' Mettre � jour la cellule G35
     wsConsole.Range("I35").value = selectedValue
 
     Exit Sub
 
 ErrorHandler:
-   
+    ' Gestion des erreurs
     MsgBox "Une erreur s'est produite : " & Err.Description, vbCritical, "Erreur"
 
 
@@ -198,28 +302,28 @@ End Sub
 
 Private Sub ComboBox6_Change()
 
-On Error GoTo ErrorHandler 
+On Error GoTo ErrorHandler ' Activer la gestion des erreurs
 
-    
+    ' V�rifier si un �l�ment est s�lectionn� dans ComboBox1
     If Me.ComboBox6.ListIndex = -1 Then
         Exit Sub
     End If
 
-    
+    ' R�cup�rer la valeur s�lectionn�e dans ComboBox1
     Dim selectedValue As String
     selectedValue = Me.ComboBox6.value
 
-   
+    ' Acc�der � la feuille "Console"
     Dim wsConsole As Worksheet
     Set wsConsole = ThisWorkbook.Sheets("Console")
 
- 
+    ' Mettre � jour la cellule G35
     wsConsole.Range("K35").value = selectedValue
 
     Exit Sub
 
 ErrorHandler:
-   
+    ' Gestion des erreurs
     MsgBox "Une erreur s'est produite : " & Err.Description, vbCritical, "Erreur"
 End Sub
 
@@ -227,13 +331,14 @@ Private Sub ComboBox7_Change()
 
 
 
-On Error GoTo ErrorHandler 
+On Error GoTo ErrorHandler ' Activer la gestion des erreurs
 
+    ' V�rifier si un �l�ment est s�lectionn� dans ComboBox1
     If Me.ComboBox7.ListIndex = -1 Then
         Exit Sub
     End If
 
-    
+    ' R�cup�rer la valeur s�lectionn�e dans ComboBox1
     Dim selectedValue As String
     selectedValue = Me.ComboBox7.value
     
@@ -251,17 +356,17 @@ On Error GoTo ErrorHandler
    ComboBox6.AddItem "16:30"
 
 
- 
+    ' Acc�der � la feuille "Console"
     Dim wsConsole As Worksheet
     Set wsConsole = ThisWorkbook.Sheets("Console")
 
-  
+    ' Mettre � jour la cellule G35
     wsConsole.Range("J35").value = selectedValue
 
     Exit Sub
     
 ErrorHandler:
-    
+    ' Gestion des erreurs
     MsgBox "Une erreur s'est produite : " & Err.Description, vbCritical, "Erreur"
 End Sub
 
@@ -275,33 +380,36 @@ Private Sub ComboDate_Rappel_Global_Change()
     Dim numFiche As String
     Dim maxDate As Date, maxTime As Date, maxRow As Long
 
- 
+    ' D�finir la feuille
     On Error Resume Next
     Set wsDatabase = ThisWorkbook.Sheets("Actions_Fiches")
     On Error GoTo 0
 
-   
+    ' V�rifier si la feuille existe
     If wsDatabase Is Nothing Then
         MsgBox "La feuille 'Actions_Fiches' n'existe pas !", vbCritical, "Erreur"
         Exit Sub
     End If
 
-
+    ' V�rifier si ComboDate_Rappel_Global contient une date valide
     If IsDate(ComboDate_Rappel_Global.value) Then
         selectedDate = CDate(ComboDate_Rappel_Global.value)
     Else
-        MsgBox "Sélection invalide dans ComboDate_Rappel_Global.", vbExclamation, "Erreur"
+        MsgBox "S�lection invalide dans ComboDate_Rappel_Global.", vbExclamation, "Erreur"
         Exit Sub
     End If
 
+    ' Trouver la derni�re ligne utilis�e dans la colonne C
     lastRowDatabase = wsDatabase.Cells(wsDatabase.Rows.Count, "C").End(xlUp).Row
 
+    ' Effacer les anciens �l�ments de la ListBox
     Me.ListBox_Global_Rappels.Clear
-    Me.ListBox_Global_Rappels.ColumnCount = 8 
+    Me.ListBox_Global_Rappels.ColumnCount = 8 ' Nombre de colonnes
     Me.ListBox_Global_Rappels.ColumnWidths = "80;80;80;80;80;80;80;80"
     Me.ListBox_Global_Rappels.BackColor = RGB(200, 200, 255)
     Me.ListBox_Global_Rappels.Font.Bold = True
 
+    ' Ajouter les en-t�tes � ListBox_Global_Rappels
     Me.ListBox_Global_Rappels.AddItem
     Me.ListBox_Global_Rappels.List(0, 0) = "Date Rappel"
     Me.ListBox_Global_Rappels.List(0, 1) = "Creneau"
@@ -309,45 +417,45 @@ Private Sub ComboDate_Rappel_Global_Change()
     Me.ListBox_Global_Rappels.List(0, 3) = "Action"
     Me.ListBox_Global_Rappels.List(0, 4) = "Commentaire"
     Me.ListBox_Global_Rappels.List(0, 5) = "Motif"
-    Me.ListBox_Global_Rappels.List(0, 6) = "Résumé"
+    Me.ListBox_Global_Rappels.List(0, 6) = "R�sum�"
     Me.ListBox_Global_Rappels.List(0, 7) = "NumFiche"
 
-  
+    ' Parcourir la feuille "Actions_Fiches" pour filtrer les rappels
     For i = 10 To lastRowDatabase
-       
-        If wsDatabase.Cells(i, "K").value <> "Clôt" And _
+        ' V�rifier les conditions : statut non "Cl�t", type "Rappel", et statut "Pr�vu"
+        If wsDatabase.Cells(i, "K").value <> "Cl�t" And _
            wsDatabase.Cells(i, "L").value = "Rappel" And _
-           wsDatabase.Cells(i, "P").value = "Prévu" Then
+           wsDatabase.Cells(i, "P").value = "Pr�vu" Then
 
-          
+            ' V�rifier si la date dans la colonne N correspond � la date s�lectionn�e
             If IsDate(wsDatabase.Cells(i, "N").value) Then
                 If wsDatabase.Cells(i, "N").value >= selectedDate Then
-                  
+                    ' R�cup�rer le NumFiche correspondant
                     numFiche = wsDatabase.Cells(i, "E").value
 
-                    
+                    ' Initialiser les variables pour stocker la date et l'heure maximales
                     maxDate = DateSerial(1900, 1, 1)
                     maxTime = TimeSerial(0, 0, 0)
                     maxRow = -1
 
-                    ' Parcourir à nouveau pour trouver le rappel le plus récent pour ce NumFiche
+                    ' Parcourir � nouveau pour trouver le rappel le plus r�cent pour ce NumFiche
                     For j = 10 To lastRowDatabase
                         If wsDatabase.Cells(j, "E").value = numFiche And _
-                           wsDatabase.Cells(j, "K").value <> "Clôt" And _
+                           wsDatabase.Cells(j, "K").value <> "Cl�t" And _
                            wsDatabase.Cells(j, "L").value = "Rappel" And _
-                           wsDatabase.Cells(j, "P").value = "Prévu" Then
+                           wsDatabase.Cells(j, "P").value = "Pr�vu" Then
 
-                            ' Vérifier si la date et l'heure sont plus récentes
+                            ' V�rifier si la date et l'heure sont plus r�centes
                             If wsDatabase.Cells(j, "N").value > maxDate Or _
                                (wsDatabase.Cells(j, "N").value = maxDate And wsDatabase.Cells(j, "O").value > maxTime) Then
                                 maxDate = wsDatabase.Cells(j, "N").value
                                 maxTime = wsDatabase.Cells(j, "O").value
-                                maxRow = j ' Enregistrer la ligne du rappel le plus récent
+                                maxRow = j ' Enregistrer la ligne du rappel le plus r�cent
                             End If
                         End If
                     Next j
 
-                    ' Si un rappel a été trouvé, ajouter les informations à la ListBox
+                    ' Si un rappel a �t� trouv�, ajouter les informations � la ListBox
                     If maxRow <> -1 Then
                         Me.ListBox_Global_Rappels.AddItem
                         Me.ListBox_Global_Rappels.List(Me.ListBox_Global_Rappels.ListCount - 1, 0) = Format(wsDatabase.Cells(maxRow, "N").value, "dddd dd/mm")
@@ -364,9 +472,9 @@ Private Sub ComboDate_Rappel_Global_Change()
         End If
     Next i
 
-    ' Vérifier si la ListBox est vide après le filtrage
+    ' V�rifier si la ListBox est vide apr�s le filtrage
     If Me.ListBox_Global_Rappels.ListCount = 0 Then
-        MsgBox "Aucun rappel trouvé pour cette date.", vbInformation, "Info"
+        MsgBox "Aucun rappel trouv� pour cette date.", vbInformation, "Info"
         Label20.Visible = False
     Else
         Label20.Visible = True
@@ -376,19 +484,19 @@ End Sub
 
 Private Sub CommandButton1_Click()
 
-    ' Vérifie si l'utilisateur appuie sur la touche Entrée
+    ' V�rifie si l'utilisateur appuie sur la touche Entr�e
     
         Dim inputText As String
         Dim nom As String
         
-        ' Récupérer le texte saisi dans ComboBox1
+        ' R�cup�rer le texte saisi dans ComboBox1
         inputText = Me.TextBox_Searsh.Text
         
-        ' Extraire le nom après le tiret
+        ' Extraire le nom apr�s le tiret
         If InStr(inputText, " - ") > 0 Then
-            nom = Trim(Split(inputText, " - ")(1)) ' Prendre la partie après le tiret
+            nom = Trim(Split(inputText, " - ")(1)) ' Prendre la partie apr�s le tiret
         Else
-            nom = inputText ' Si le format n'est pas respecté, utiliser tout le texte
+            nom = inputText ' Si le format n'est pas respect�, utiliser tout le texte
         End If
         
         ' Afficher le nom dans TextBox2
@@ -475,7 +583,7 @@ For i = 10 To ws_Fiches.Cells(ws_Fiches.Rows.Count, "H").End(xlUp).Row
     
    
     If Me.txtRef.Text = ws_Fiches.Cells(i, "H").value Then
-        MsgBox "Error: La référence existe déjà."
+        MsgBox "Error: La r�f�rence existe d�j�."
     Else
        
         
@@ -491,7 +599,7 @@ For i = 10 To ws_Fiches.Cells(ws_Fiches.Rows.Count, "H").End(xlUp).Row
     End If
 Next i
 
-
+' D�sactiver le mode couper-copier
 Application.CutCopyMode = False
 
 'Enregistrement d'Action sur  la fiche
@@ -515,7 +623,7 @@ If CheckBox2.value = False Then
     End If
 'Statut Action  I
 wsConsole.Range("I31").value = Combo_Resume_Nouveau
-'Resumé Action Fiche  J
+'Resum� Action Fiche  J
 wsConsole.Range("J31").value = Combo_Resume_Nouveau
 'Commentaire Action Fiche  K
 wsConsole.Range("K31").value = TextBox8.Text ' Comentaire
@@ -524,7 +632,7 @@ wsConsole.Range("L31").value = ComboBox_DateRappel_Nouveau.Text
 'Creneau Rappel  M
 wsConsole.Range("M31").value = ComboBox_CrenauRappel_Nouveau.Text
 'Statut Rappel  N
-wsConsole.Range("N31").value = "Prévu"
+wsConsole.Range("N31").value = "Pr�vu"
 
 
 
@@ -574,7 +682,7 @@ Dim numFiche As String
        ' Label_NumFiche.Visible = True
         Frame6.Visible = True
     Else
-        LabelRef.Caption = "Aucune sélection"
+        LabelRef.Caption = "Aucune s�lection"
         LabelRef.Visible = False
     End If
     
@@ -590,32 +698,41 @@ Private Sub ListBox_Global_Click()
     Dim selectedNumFiche As String
     Dim i As Long
 
-
+    ' Trouver la feuille "database"
     On Error Resume Next
     Set wsDatabase = ThisWorkbook.Sheets("Actions_Fiches")
     On Error GoTo 0
 
     
+
+    ' D�terminer la derni�re ligne de la feuille "database"
     lastRowDatabase = wsDatabase.Cells(wsDatabase.Rows.Count, "E").End(xlUp).Row
 
+
+    ' V�rifier si un �l�ment est s�lectionn� dans ListBox_Global
+    
+
+    ' R�cup�rer le NumFiche de l'�l�ment s�lectionn�
     selectedNumFiche = Me.ListBox_Global.List(Me.ListBox_Global.ListIndex, 7)
      Label__Global_Liste_Commentaire.Caption = ListBox_Global.List(ListBox_Global.ListIndex, 4)
     
-
+    
+    ' R�cup�rer le commentaire de la ligne s�lectionn�e dans ListBox_Global
     Dim selectedCommentaire As String
     selectedCommentaire = Me.ListBox_Global.List(Me.ListBox_Global.ListIndex, 4) ' Commentaire est dans la colonne 4
 
-
+    ' Afficher le commentaire dans le label
     Label__Global_Liste_Commentaire.Caption = selectedCommentaire
     Label__Global_Liste_Commentaire.Visible = True
 
+    ' Effacer la ListBox_Global_Details pour afficher les nouvelles informations
     Me.ListBox_Global_Details.Clear
     Me.ListBox_Global_Details.ColumnCount = 8
     Me.ListBox_Global_Details.ColumnWidths = "80;80;80;80;80;80"
     Me.ListBox_Global_Details.BackColor = RGB(200, 200, 255)
     Me.ListBox_Global_Details.Font.Bold = True
 
-    ' Ajouter les en-têtes à ListBox_Global_Details
+    ' Ajouter les en-t�tes � ListBox_Global_Details
     Me.ListBox_Global_Details.AddItem
     Me.ListBox_Global_Details.List(0, 0) = "Date"
     Me.ListBox_Global_Details.List(0, 1) = "Heure"
@@ -623,24 +740,26 @@ Private Sub ListBox_Global_Click()
     Me.ListBox_Global_Details.List(0, 3) = "Action"
     Me.ListBox_Global_Details.List(0, 4) = "Commentaire"
     Me.ListBox_Global_Details.List(0, 5) = "Motif"
-    Me.ListBox_Global_Details.List(0, 6) = "Résumé"
+    Me.ListBox_Global_Details.List(0, 6) = "R�sum�"
     Me.ListBox_Global_Details.List(0, 7) = "NumFiche"
 
+    ' Parcourir la base de donn�es pour trouver les enregistrements correspondants au NumFiche s�lectionn�
     For i = 10 To lastRowDatabase
-        If wsDatabase.Cells(i, "E").value = selectedNumFiche Then 
+        If wsDatabase.Cells(i, "E").value = selectedNumFiche Then ' V�rifier si le NumFiche correspond
+            ' Ajouter l'enregistrement � ListBox_Global_Details
             Me.ListBox_Global_Details.AddItem
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 0) = Format(wsDatabase.Cells(i, "B").value, "dddd dd/mm") ' Date Rappel (colonne K)
-            Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 1) = Format(wsDatabase.Cells(i, "A").value, "hh:mm") ' Créneau (colonne L)
+            Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 1) = Format(wsDatabase.Cells(i, "A").value, "hh:mm") ' Cr�neau (colonne L)
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 2) = wsDatabase.Cells(i, "D").value ' Assu (colonne D)
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 3) = wsDatabase.Cells(i, "I").value ' Action (colonne I)
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 4) = wsDatabase.Cells(i, "M").value ' Commentaire (colonne M)
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 5) = wsDatabase.Cells(i, "H").value ' Motif (colonne H)
-            Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 6) = wsDatabase.Cells(i, "J").value ' Résumé (colonne J)
+            Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 6) = wsDatabase.Cells(i, "J").value ' R�sum� (colonne J)
             Me.ListBox_Global_Details.List(Me.ListBox_Global_Details.ListCount - 1, 7) = wsDatabase.Cells(i, "C").value ' NumFiche (colonne C)
         End If
     Next i
 
-
+    ' Mettre � jour les labels avec les informations de l'�l�ment s�lectionn�
     If Me.ListBox_Global_Details.ListCount > 0 Then
     
     For i = 10 To wsDatabase.Cells(wsDatabase.Rows.Count, "E").End(xlUp).Row
@@ -663,7 +782,7 @@ Private Sub ListBox_Global_Click()
        
         Label__Global_Liste_Details_Commentaire.Visible = False
     Else
-        'Label__Global_Liste_Commentaire.Caption = "Aucune information trouvée"
+        'Label__Global_Liste_Commentaire.Caption = "Aucune information trouv�e"
     End If
     Next i
     
@@ -676,7 +795,7 @@ Sub Assu_Info()
     Set wsDatabase = ThisWorkbook.Sheets("database")
     On Error GoTo 0
 
-    ' Vérifier si la feuille "database" existe
+    ' V�rifier si la feuille "database" existe
     If wsDatabase Is Nothing Then
         MsgBox "La feuille 'database' n'existe pas !", vbCritical, "Erreur"
         Exit Sub
@@ -694,7 +813,7 @@ For i = 10 To wsDatabase.Cells(wsDatabase.Rows.Count, "C").End(xlUp).Row
         Frame5.Visible = True
         ListBox_Global_Details.Visible = True
     Else
-        Label__Global_Liste_Commentaire.Caption = "Aucune information trouvée"
+        Label__Global_Liste_Commentaire.Caption = "Aucune information trouv�e"
     End If
     Next i
     
@@ -715,7 +834,7 @@ Label35.Visible = True
         'Label_NumFiche.Visible = True
         Frame5.Visible = True
     Else
-        Label__Global_Liste_Details_Commentaire.Caption = "Aucune sélection"
+        Label__Global_Liste_Details_Commentaire.Caption = "Aucune s�lection"
     End If
     
     
@@ -730,7 +849,7 @@ Private Sub ListBox_Global_Rappels_Click()
 Set wsDatabase = ThisWorkbook.Sheets("database")
     On Error GoTo 0
 
-    ' Vérifier si la feuille "database" existe
+    ' V�rifier si la feuille "database" existe
     If wsDatabase Is Nothing Then
         MsgBox "La feuille 'database' n'existe pas !", vbCritical, "Erreur"
         Exit Sub
@@ -757,7 +876,7 @@ Set wsDatabase = ThisWorkbook.Sheets("database")
         Frame5.Visible = True
         ListBox_Global_Details.Visible = True
     Else
-        Label__Global_Liste_Commentaire.Caption = "Aucune information trouvée"
+        Label__Global_Liste_Commentaire.Caption = "Aucune information trouv�e"
     End If
     Next i
     
@@ -785,7 +904,7 @@ Dim numFiche As String
         Frame6.Visible = True
     Else
     
-        LabelRef.Caption = "Aucune sélection"
+        LabelRef.Caption = "Aucune s�lection"
     End If
     
     
@@ -807,7 +926,7 @@ Dim numFiche As String
         Frame6.Visible = True
     Else
     
-        LabelRef.Caption = "Aucune sélection"
+        LabelRef.Caption = "Aucune s�lection"
     End If
     
     
@@ -823,7 +942,7 @@ If MultiPage1.value = 1 Then
 Label19.Visible = True
 ComboDate_Rappel_Global.Visible = True
 
-'MsgBox "L'événement MultiPage1_Change est déclenché. Onglet sélectionné : " & MultiPage1.value
+'MsgBox "L'�v�nement MultiPage1_Change est d�clench�. Onglet s�lectionn� : " & MultiPage1.value
 
 Else
 Label19.Visible = False
@@ -833,7 +952,7 @@ End Sub
     
 'End Sub
 Private Sub MultiPage2_Change()
-    MsgBox "L'événement MultiPage1_Change est déclenché. yyyyyyyyyyyyyyyOnglet sélectionné : " & MultiPage1.value
+    MsgBox "L'�v�nement MultiPage1_Change est d�clench�. yyyyyyyyyyyyyyyOnglet s�lectionn� : " & MultiPage1.value
 End Sub
 
 Private Sub OptionButton_Global_Click()
@@ -850,11 +969,11 @@ Label35.Visible = False
 
 
     'Select Case MultiPage1.value
-       ' Case 0 ' Page 1 (Détails)
+       ' Case 0 ' Page 1 (D�tails)
           '  Me.ComboDate_Rappel_Global.Visible = False
           '  Label19.Visible = False
             
-    ' MsgBox "MultiPage1_Change déclenché ! Onglet sélectionné : " & MultiPage1.value
+    ' MsgBox "MultiPage1_Change d�clench� ! Onglet s�lectionn� : " & MultiPage1.value
       '  Case 1 ' Page 2 (Rappels)
             'Me.ComboDate_Rappel_Global.Visible = True
           '  Label19.Visible = True
@@ -871,7 +990,7 @@ Combo_Action_Global.AddItem "Etude"
 
    Combo_Resume_Global.AddItem "Rappel"
    Combo_Resume_Global.AddItem "Suivie"
-   Combo_Resume_Global.AddItem "Traité"
+   Combo_Resume_Global.AddItem "Trait�"
    Combo_Resume_Global.AddItem "Injoignable"
    
   
@@ -953,22 +1072,22 @@ Private Sub txtRef_Change()
 Sheets("Console").Range("E7").value = Me.txtRef.value
 End Sub
 Private Sub CommandButton1_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
-    CommandButton1.BackColor = RGB(0, 120, 215) 
+    CommandButton1.BackColor = RGB(0, 120, 215) ' Bleu clair au survol
 End Sub
 
 Private Sub UserForm_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     CommandButton1.BackColor = RGB(240, 240, 240)
      CommandButton2.BackColor = RGB(240, 240, 240)
-     CommandButton7.BackColor = RGB(240, 240, 240) 
+     CommandButton7.BackColor = RGB(240, 240, 240) ' Retour � la couleur d'origine
 End Sub
 Private Sub CommandButton2_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
-    CommandButton2.BackColor = RGB(0, 120, 215)
+    CommandButton2.BackColor = RGB(0, 120, 215) ' Bleu clair au survol
 End Sub
 
 
 
 Private Sub CommandButton7_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
-    CommandButton7.BackColor = RGB(0, 120, 215)
+    CommandButton7.BackColor = RGB(0, 120, 215) ' Bleu clair au survol
 End Sub
 
 
@@ -982,13 +1101,13 @@ Sub LoadGrapik(SChart As String, ImgCtrl As Control, Optional FileIndex As Integ
     Dim NmFile As String
     Dim UniqueID As String
     
-
+    ' G�n�rer un ID unique pour le fichier temporaire
     UniqueID = "Chart_" & FileIndex
     NmFile = ThisWorkbook.Path & "\" & UniqueID & ".gif"
     
     Set NmChart = ThisWorkbook.Sheets("Graphs").ChartObjects(SChart).Chart
     
-   
+    ' Exporter le graphique seulement si le fichier n'existe pas d�j�
     If Dir(NmFile) = "" Then
         NmChart.Export NmFile, "GIF"
     End If
@@ -996,7 +1115,7 @@ Sub LoadGrapik(SChart As String, ImgCtrl As Control, Optional FileIndex As Integ
     On Error Resume Next
     Set ImgCtrl.Picture = LoadPicture(NmFile)
     If Err.Number <> 0 Then
-        MsgBox "Impossible de charger l'image dans le contrôle.", vbExclamation
+        MsgBox "Impossible de charger l'image dans le contr�le.", vbExclamation
     End If
     On Error GoTo 0
 End Sub
@@ -1016,16 +1135,16 @@ Call LoadGrapik("Graphique_Bar", Me.Image2, 1)
     Call LoadGrapik("Graphique_Total", Me.Image5, 3)
 
 
-
+' Colorier le fond de MultiPage1 en blanc
 MultiPage1.BackColor = RGB(255, 255, 255) ' Blanc
 
-
+' Colorier le fond de MultiPage_Global en gris clair
 MultiPage_Global.BackColor = RGB(192, 192, 192) ' Gris clair
 
 
    
     With Me
-        .StartUpPosition = 0 
+        .StartUpPosition = 0 ' Position manuelle
         .Left = (Application.Left + (Application.Width - .Width) / 2)
         .Top = (Application.Top + (Application.Height - .Height) / 2)
     End With
@@ -1063,22 +1182,22 @@ MultiPage_Global.BackColor = RGB(192, 192, 192) ' Gris clair
    
    
    
-   Combo_Resume_Nouveau.AddItem "Clôt"
+   Combo_Resume_Nouveau.AddItem "Cl�t"
    Combo_Resume_Nouveau.AddItem "Rappel"
    Combo_Resume_Nouveau.AddItem "Suivie"
-   Combo_Resume_Nouveau.AddItem "Traité"
+   Combo_Resume_Nouveau.AddItem "Trait�"
    Combo_Resume_Nouveau.AddItem "Injoignable"
    
    
-   Combo_Resume_existant.AddItem "Clôt"
+   Combo_Resume_existant.AddItem "Cl�t"
    Combo_Resume_existant.AddItem "Rappel"
    Combo_Resume_existant.AddItem "Suivie"
-   Combo_Resume_existant.AddItem "Traité"
+   Combo_Resume_existant.AddItem "Trait�"
    Combo_Resume_existant.AddItem "Injoignable"
    
    Combo_Source_Nouveau.AddItem "AMM"
-   Combo_Source_Nouveau.AddItem "Assuré -Mail"
-   Combo_Source_Nouveau.AddItem "Appel reçu"
+   Combo_Source_Nouveau.AddItem "Assur� -Mail"
+   Combo_Source_Nouveau.AddItem "Appel re�u"
    Combo_Source_Nouveau.AddItem "STANDARD -Murielle"
    Combo_Source_Nouveau.AddItem "STANDARD -Maeva"
    Combo_Source_Nouveau.AddItem "STANDARD -Anais"
@@ -1086,7 +1205,7 @@ MultiPage_Global.BackColor = RGB(192, 192, 192) ' Gris clair
    
    Combo_Motif_Nouveau.AddItem "Explication"
    Combo_Motif_Nouveau.AddItem "Reclamation"
-   Combo_Motif_Nouveau.AddItem "Point à refaire"
+   Combo_Motif_Nouveau.AddItem "Point � refaire"
    
    Combo_Creneau.AddItem "9:00"
    Combo_Creneau.AddItem "9:30"
@@ -1103,16 +1222,16 @@ MultiPage_Global.BackColor = RGB(192, 192, 192) ' Gris clair
    
        
 Set ws = ThisWorkbook.Sheets("Fiches")
-lastRow = ws.Cells(ws.Rows.Count, "F").End(xlUp).Row 
+lastRow = ws.Cells(ws.Rows.Count, "F").End(xlUp).Row ' Trouve la derni�re ligne dans la colonne F
 
 For Each cell In ws.Range("F11:F" & lastRow)
     If cell.value <> "" Then
-    
+        ' R�cup�rer les valeurs en utilisant les lettres de colonnes
         nom = cell.value ' Colonne F
         numFiche = ws.Range("D" & cell.Row).value ' Colonne D
         datefiche = ws.Range("E" & cell.Row).value ' Colonne E
         
-    
+        ' Ajouter l'�l�ment � la ComboBox
         Me.ComboBox1.AddItem nom & " - " & numFiche & " - " & datefiche
     End If
 Next cell
@@ -1124,7 +1243,7 @@ ListBox_Global_Details.Visible = False
 End Sub
 
 Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-
+    ' V�rifie si la touche "Entr�e" est press�e
     If KeyCode = vbKeyReturn Then
         Dim wsFiches As Worksheet, wsConsole As Worksheet, wsFiches_Action As Worksheet
         Dim lastRowDatabase As Long, lastRowFichesAction As Long
@@ -1133,31 +1252,31 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
         Dim found As Boolean
         Dim i As Long
         
-       
+        ' Initialisation des feuilles
         Set wsFiches = ThisWorkbook.Sheets("Fiches")
         Set wsFiches_Action = ThisWorkbook.Sheets("Actions_Fiches")
         Set wsConsole = ThisWorkbook.Sheets("Console")
         
-      
+        ' Trouver la derni�re ligne dans les colonnes pertinentes
         lastRowDatabase = wsFiches.Cells(wsFiches.Rows.Count, "F").End(xlUp).Row
         lastRowFichesAction = wsFiches_Action.Cells(wsFiches_Action.Rows.Count, "E").End(xlUp).Row
         
-     
+        ' Extraire le nom recherch� � partir de la ComboBox
         nomRecherche = Split(Me.ComboBox1.Text, " - ")(0)
         
-    
+        ' Initialisation de la variable found
         found = False
         
-
+        ' Parcourir la colonne F de la feuille "Fiches"
         For Each cell In wsFiches.Range("F10:F" & lastRowDatabase)
             If cell.value = nomRecherche Then
-        
+                ' R�cup�rer les valeurs des colonnes correspondantes
                 numFiche = wsFiches.Range("H" & cell.Row).value ' Colonne H
                 Me.LabelDate.Caption = Format(wsFiches.Range("I" & cell.Row).value, "dddd dd mmmm yyyy  HH:MM") ' Colonne I
                 Me.LabelRef.Caption = wsFiches.Range("K" & cell.Row).value ' Colonne K
                 Me.LabelRef1.Caption = wsFiches.Range("N" & cell.Row).value ' Colonne N
                 
-            
+                ' Mettre � jour les labels suppl�mentaires
                 Me.Label_Assu.Caption = wsFiches.Range("F" & cell.Row).value ' Colonne F
                 Me.Label_Date_Fiche.Caption = Format(wsFiches.Range("I" & cell.Row).value, "dddd dd mmmm  hh:mm:ss") ' Colonne I
                 Label_Commentaire_Existant.Caption = wsFiches.Range("O" & cell.Row).value
@@ -1167,14 +1286,14 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 Me.ListBox_Global_Details.Visible = True
                 Me.Label__Global_Liste_Details_Commentaire.Visible = False
                 
-    
+                ' Vider et configurer la ListBox pour l'historique
                 Me.List_Histo.Clear
                 Me.List_Histo.ColumnCount = 7
                 Me.List_Histo.ColumnWidths = "100;60;100;100;100;100"
                 Me.List_Histo.BackColor = RGB(200, 200, 255)
                 Me.List_Histo.Font.Bold = True
                 
-
+                ' Ajouter les en-t�tes de colonnes
                 Me.List_Histo.AddItem
                 Me.List_Histo.List(0, 0) = "Date"
                 Me.List_Histo.List(0, 1) = "Heure"
@@ -1184,7 +1303,7 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 Me.List_Histo.List(0, 5) = "Statut"
                 Me.List_Histo.List(0, 6) = "Commentaire"
                 
-                ' Remplir la ListBox avec les données de "Actions_Fiches"
+                ' Remplir la ListBox avec les donn�es de "Actions_Fiches"
                 For i = 10 To lastRowFichesAction
                     If wsFiches_Action.Cells(i, "E").value = numFiche Then
                         Me.List_Histo.AddItem
@@ -1198,14 +1317,14 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                     End If
                 Next i
                 
-   
+                ' Vider et configurer la ListBox pour les rappels
                 Me.ListBox_Rappel.Clear
                 Me.ListBox_Rappel.ColumnCount = 6
                 Me.ListBox_Rappel.ColumnWidths = "100;80;80;80;90;80"
                 Me.ListBox_Rappel.BackColor = RGB(200, 200, 255)
                 Me.ListBox_Rappel.Font.Bold = True
                 
-             
+                ' Ajouter les en-t�tes de colonnes
                 Me.ListBox_Rappel.AddItem
                 Me.ListBox_Rappel.List(0, 0) = "Date Rappel"
                 Me.ListBox_Rappel.List(0, 1) = "Creneau"
@@ -1238,7 +1357,7 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 Me.ListBox_Rappel_Histo.BackColor = RGB(200, 200, 255)
                 Me.ListBox_Rappel_Histo.Font.Bold = True
                 
-
+                ' Ajouter les en-t�tes de colonnes
                 Me.ListBox_Rappel_Histo.AddItem
                 Me.ListBox_Rappel_Histo.List(0, 0) = "Date Rappel"
                 Me.ListBox_Rappel_Histo.List(0, 1) = "Creneau"
@@ -1250,7 +1369,7 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 
                 ' Remplir la ListBox avec les rappels
                 For i = 10 To lastRowFichesAction
-                    If wsFiches_Action.Cells(i, "E").value = numFiche And wsFiches_Action.Cells(i, "L").value = "Rappel" And wsFiches_Action.Cells(i, "P").value = "Prévu" Then
+                    If wsFiches_Action.Cells(i, "E").value = numFiche And wsFiches_Action.Cells(i, "L").value = "Rappel" And wsFiches_Action.Cells(i, "P").value = "Pr�vu" Then
                         Me.ListBox_Rappel_Histo.AddItem
                         Me.ListBox_Rappel_Histo.List(Me.ListBox_Rappel_Histo.ListCount - 1, 0) = Format(wsFiches_Action.Cells(i, "N").value, "dddd dd/mmmm")
                         Me.ListBox_Rappel_Histo.List(Me.ListBox_Rappel_Histo.ListCount - 1, 1) = Format(wsFiches_Action.Cells(i, "O").value, "hh:mm")
@@ -1267,14 +1386,14 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 
                 
                 
-    
+                ' Vider et configurer la ListBox pour les rappels globaux
                 Me.ListBox_Global.Clear
                 Me.ListBox_Global.ColumnCount = 5
                 Me.ListBox_Global.ColumnWidths = "100;100;100;600;80"
                 Me.ListBox_Global.BackColor = RGB(200, 200, 255)
                 Me.ListBox_Global.Font.Bold = True
                 
-       
+                ' Ajouter les en-t�tes de colonnes
                 Me.ListBox_Global.AddItem
                 Me.ListBox_Global.List(0, 0) = "Date Rappel"
                 Me.ListBox_Global.List(0, 1) = "Creneau"
@@ -1284,7 +1403,7 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                 
                 ' Remplir la ListBox avec les rappels globaux
                 For i = 10 To lastRowFichesAction
-                    If wsFiches_Action.Cells(i, "L").value <> "Clôt" And wsFiches_Action.Cells(i, "L").value = "Rappel" Then
+                    If wsFiches_Action.Cells(i, "L").value <> "Cl�t" And wsFiches_Action.Cells(i, "L").value = "Rappel" Then
                         Me.ListBox_Global.AddItem
                         Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 0) = Format(wsFiches_Action.Cells(i, "K").value, "dddd dd/mm")
                         Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 1) = Format(wsFiches_Action.Cells(i, "L").value, "hh:mm")
@@ -1294,7 +1413,7 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
                     End If
                 Next i
                 
-   
+                ' Marquer comme trouv� et quitter la boucle
                 found = True
                 Me.OptionButton_Existant.value = True
                 Me.TextBox_Searsh.Text = ""
@@ -1303,10 +1422,10 @@ Private Sub ComboBox1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shif
             End If
         Next cell
         
-     
+        ' Si aucune donn�e n'est trouv�e
         If Not found Then
             Me.OptionButton_Nouveau.value = True
-            MsgBox "Aucune donnée trouvée pour le nom : " & nomRecherche, vbInformation
+            MsgBox "Aucune donn�e trouv�e pour le nom : " & nomRecherche, vbInformation
             Me.txtRef.Text = nomRecherche
             wsConsole.Range("E28").value = Me.txtRef.value
         End If
@@ -1357,20 +1476,22 @@ Sub Global_Stat()
     Dim numFiche As String
     Dim maxDate As Date, maxTime As Date, maxRow As Long
 
-
+    ' Initialisation des feuilles
     Set wsFiches = ThisWorkbook.Sheets("Fiches")
     Set wsActions_Fiches = ThisWorkbook.Sheets("Actions_Fiches")
 
+    ' Trouver la derni�re ligne des feuilles
     lastRowFiches = wsFiches.Cells(wsFiches.Rows.Count, "H").End(xlUp).Row
     lastRowActions = wsActions_Fiches.Cells(wsActions_Fiches.Rows.Count, "E").End(xlUp).Row
 
-
+    ' Effacer et configurer la ListBox principale
     Me.ListBox_Global.Clear
     Me.ListBox_Global.ColumnCount = 8
     Me.ListBox_Global.ColumnWidths = "80;80;80;80;80;80;80;5"
     Me.ListBox_Global.BackColor = RGB(200, 200, 255)
     Me.ListBox_Global.Font.Bold = True
 
+    ' Ajouter les en-t�tes � ListBox_Global
     Me.ListBox_Global.AddItem
     Me.ListBox_Global.List(0, 0) = "Date Rappel"
     Me.ListBox_Global.List(0, 1) = "Creneau"
@@ -1378,15 +1499,15 @@ Sub Global_Stat()
     Me.ListBox_Global.List(0, 3) = "Action"
     Me.ListBox_Global.List(0, 4) = "Commentaire"
     Me.ListBox_Global.List(0, 5) = "Motif"
-    Me.ListBox_Global.List(0, 6) = "Résumé"
+    Me.ListBox_Global.List(0, 6) = "R�sum�"
     Me.ListBox_Global.List(0, 7) = "NumFiche"
 
-
+    ' Parcourir la feuille "Fiches" pour remplir ListBox_Global
     For i = 11 To lastRowFiches
-        If wsFiches.Cells(i, "N").value <> "Clôt" Then
+        If wsFiches.Cells(i, "N").value <> "Cl�t" Then
             numFiche = wsFiches.Cells(i, "H").value
 
-            ' Ajouter l'enregistrement à ListBox_Global
+            ' Ajouter l'enregistrement � ListBox_Global
             Me.ListBox_Global.AddItem
             Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 0) = Format(wsFiches.Cells(i, "E").value, "dddd dd/mm")
             Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 1) = Format(wsFiches.Cells(i, "D").value, "hh:mm")
@@ -1399,13 +1520,14 @@ Sub Global_Stat()
         End If
     Next i
 
+    ' Effacer et configurer la ListBox des rappels
     Me.ListBox_Global_Rappels.Clear
     Me.ListBox_Global_Rappels.ColumnCount = 8
     Me.ListBox_Global_Rappels.ColumnWidths = "80;80;80;80;80;80;80;5"
     Me.ListBox_Global_Rappels.BackColor = RGB(200, 200, 255)
     Me.ListBox_Global_Rappels.Font.Bold = True
 
- 
+    ' Ajouter les en-t�tes � ListBox_Global_Rappels
     Me.ListBox_Global_Rappels.AddItem
     Me.ListBox_Global_Rappels.List(0, 0) = "Date Rappel"
     Me.ListBox_Global_Rappels.List(0, 1) = "Creneau"
@@ -1416,31 +1538,32 @@ Sub Global_Stat()
     Me.ListBox_Global_Rappels.List(0, 6) = "Statut"
     Me.ListBox_Global_Rappels.List(0, 7) = "NumFiche"
 
-
+    ' Parcourir chaque NumFiche dans la feuille Fiches
     For i = 11 To lastRowFiches
         numFiche = wsFiches.Cells(i, "H").value ' NumFiche dans la colonne H
 
+        ' Initialiser les variables pour stocker la date et l'heure maximales
         maxDate = DateSerial(1900, 1, 1)
         maxTime = TimeSerial(0, 0, 0)
         maxRow = -1
 
-  
+        ' Parcourir la feuille Actions_Fiches pour trouver les rappels correspondants
         For j = 10 To lastRowActions
             If wsActions_Fiches.Cells(j, "E").value = numFiche And _
-               wsActions_Fiches.Cells(j, "K").value <> "Clôt" And _
+               wsActions_Fiches.Cells(j, "K").value <> "Cl�t" And _
                wsActions_Fiches.Cells(j, "L").value = "Rappel" Then
 
- 
+                ' V�rifier si la date et l'heure sont plus r�centes
                 If wsActions_Fiches.Cells(j, "N").value > maxDate Or _
                    (wsActions_Fiches.Cells(j, "N").value = maxDate And wsActions_Fiches.Cells(j, "O").value > maxTime) Then
                     maxDate = wsActions_Fiches.Cells(j, "N").value
                     maxTime = wsActions_Fiches.Cells(j, "O").value
-                    maxRow = j ' Enregistrer la ligne du rappel le plus récent
+                    maxRow = j ' Enregistrer la ligne du rappel le plus r�cent
                 End If
             End If
         Next j
 
-        ' Si un rappel a été trouvé, ajouter les informations à la ListBox
+        ' Si un rappel a �t� trouv�, ajouter les informations � la ListBox
         If maxRow <> -1 Then
             Me.ListBox_Global_Rappels.AddItem
             Me.ListBox_Global_Rappels.List(Me.ListBox_Global_Rappels.ListCount - 1, 0) = Format(wsActions_Fiches.Cells(maxRow, "N").value, "dddd dd/mm")
@@ -1454,16 +1577,17 @@ Sub Global_Stat()
         End If
     Next i
 
+    ' Mettre � jour l'onglet
     UpdateTabCaption
 
 End Sub
 
 Private Sub UpdateTabCaption()
     Dim itemCount As Integer
-
+    ' Acc�der � la ListBox sur Page2 et compter les �l�ments
     itemCount = Me.ListBox_Global_Rappels.ListCount
     
-  
+    ' Mettre � jour le nom de l'onglet de Page2 dans le MultiPage
     Me.MultiPage1.Pages(1).Caption = "Rappel (" & itemCount & ")"
 End Sub
 Private Sub ListBox_Global_Rappels_Change()
@@ -1471,7 +1595,7 @@ Private Sub ListBox_Global_Rappels_Change()
 End Sub
 
 'Private Sub MultiPage1_Change()
-    'If Me.MultiPage1.value = 1 Then ' Si l'utilisateur passe à Page2
+    'If Me.MultiPage1.value = 1 Then ' Si l'utilisateur passe � Page2
        ' UpdateTabCaption
    ' End If
 'End Sub
@@ -1485,16 +1609,25 @@ Private Sub ComboBox_Change()
     Dim wsDatabase As Worksheet
     Dim lastRowDatabase As Long
     
-
+    ' D�sactiver les �v�nements pour �viter des boucles infinies
+    'Application.EnableEvents = False
+    
+    ' R�cup�rer le texte saisi dans ComboBox1
     txt = Me.ComboBox1.Text
-
+    
+    ' Effacer la liste actuelle de ComboBox1
     Me.ComboBox1.Clear
     
+    ' D�finir la feuille "database"
     Set wsDatabase = ThisWorkbook.Sheets("Fiches")
+    
+    ' Trouver la derni�re ligne de la colonne D dans "database"
     lastRowDatabase = wsDatabase.Cells(wsDatabase.Rows.Count, "J").End(xlUp).Row
+    
+    ' Cr�er une collection pour stocker les �l�ments uniques
     Set uniqueItems = New Collection
     
-
+    ' Parcourir la colonne D pour trouver les �l�ments correspondants
     For i = 10 To lastRowDatabase
         If LCase(Left(wsDatabase.Cells(i, "J").value, Len(txt))) = LCase(txt) Then
             On Error Resume Next
@@ -1503,70 +1636,82 @@ Private Sub ComboBox_Change()
         End If
     Next i
     
+    ' Ajouter les �l�ments uniques � la ComboBox1
     For Each item In uniqueItems
         Me.ComboBox1.AddItem item
     Next item
-
+    
+    ' R�activer les �v�nements
     Application.EnableEvents = True
 End Sub
 
 
 
 Private Sub TextBox_Searsh_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ' V�rifie si l'utilisateur appuie sur la touche Entr�e
     If KeyCode = vbKeyReturn Then
         Dim wsDatabase As Worksheet, wsConsole As Worksheet
         Dim lastRowDatabase As Long
         Dim nomRecherche As String
         Dim numFiche As String
         Dim found As Boolean
-        Dim i As Long, j As Long 
+        Dim i As Long, j As Long ' Utiliser une autre variable pour les boucles internes
         
-
+        ' D�finir les feuilles
         Set wsDatabase = ThisWorkbook.Sheets("Fiches")
         Set wsConsole = ThisWorkbook.Sheets("Console")
-
+        
+        ' Trouver la derni�re ligne de la colonne C dans "database"
         lastRowDatabase = wsDatabase.Cells(wsDatabase.Rows.Count, "J").End(xlUp).Row
+        
+        ' R�cup�rer le num�ro de fiche saisi dans ComboBox1
         numFiche = ExtractNumFiche(Me.TextBox_Searsh.Text)
- 
+        
+        ' V�rifier si un num�ro de fiche a �t� trouv�
         If numFiche = "" Then
-            MsgBox "Le format du texte saisi est incorrect. Veuillez utiliser le format : 'Fiche N°XXXXXXX - Nom'.", vbExclamation
+            MsgBox "Le format du texte saisi est incorrect. Veuillez utiliser le format : 'Fiche N�XXXXXXX - Nom'.", vbExclamation
             Exit Sub
         End If
- 
+        
+        ' Initialiser la variable found
         found = False
- 
-        For i = 2 To lastRowDatabase 
+        
+        ' Parcourir la colonne C pour trouver le num�ro de fiche
+        For i = 2 To lastRowDatabase ' Commence � la ligne 2 (en supposant que la ligne 1 est l'en-t�te)
             If wsDatabase.Cells(i, "H").value = numFiche Then
-             
-                nomRecherche = wsDatabase.Cells(i, "F").value ' Colonne D (Nom Prénom)
+                ' R�cup�rer le nom associ� au num�ro de fiche
+                nomRecherche = wsDatabase.Cells(i, "F").value ' Colonne D (Nom Pr�nom)
                 
-         
+                ' Afficher la date et la r�f�rence
                 Me.LabelDate.Caption = Format(wsDatabase.Cells(i, "E").value, "dddd dd mmmm yyyy") ' Colonne E (Now)
                 Me.LabelRef.Caption = wsDatabase.Cells(i, "F").value ' Colonne F (Ref)
                 Me.LabelRef1.Caption = nomRecherche ' Afficher le nom dans LabelRef1
                 
-   
+                ' Effacer la liste existante dans List_Histo
                 Me.List_Histo.Clear
                 
-                Me.List_Histo.ColumnCount = 4 
-                Me.List_Histo.ColumnWidths = "100;60;600;100" 
-                Me.List_Histo.BackColor = RGB(200, 200, 255) 
-                Me.List_Histo.Font.Bold = True 
-
+                ' Configurer la ListBox pour afficher des colonnes
+                Me.List_Histo.ColumnCount = 4 ' Nombre de colonnes (Date, Heure, Commentaire, R�sum�)
+                Me.List_Histo.ColumnWidths = "100;60;600;100" ' Largeur des colonnes
+                Me.List_Histo.BackColor = RGB(200, 200, 255) ' Couleur de fond (bleu clair)
+                Me.List_Histo.Font.Bold = True ' Texte en gras
+                
+                ' Ajouter les en-t�tes � List_Histo
                 Me.List_Histo.AddItem
                 Me.List_Histo.List(0, 0) = "Date"
                 Me.List_Histo.List(0, 1) = "Heure"
                 Me.List_Histo.List(0, 2) = "Commentaire"
-                Me.List_Histo.List(0, 3) = "Résumé"     
-          
-                For j = 2 To lastRowDatabase 
+                Me.List_Histo.List(0, 3) = "R�sum�"
+                
+                ' Parcourir la colonne C de "database" pour trouver les enregistrements correspondants au Num Fiche
+                For j = 2 To lastRowDatabase ' Utiliser une autre variable (j) pour la boucle interne
                     If wsDatabase.Cells(j, "C").value = numFiche Then ' Colonne C (Num Fiche)
-                        ' Ajouter l'enregistrement à List_Histo
+                        ' Ajouter l'enregistrement � List_Histo
                         Me.List_Histo.AddItem
                         Me.List_Histo.List(Me.List_Histo.ListCount - 1, 0) = Format(wsDatabase.Cells(j, "E").value, "dddd dd mmmm yyyy") ' Date (colonne E)
                         Me.List_Histo.List(Me.List_Histo.ListCount - 1, 1) = Format(wsDatabase.Cells(j, "D").value, "hh:mm") ' Heure (colonne E)
                         Me.List_Histo.List(Me.List_Histo.ListCount - 1, 2) = wsDatabase.Cells(j, "O").value ' Commentaire (colonne G)
-                        Me.List_Histo.List(Me.List_Histo.ListCount - 1, 3) = wsDatabase.Cells(j, "N").value ' Résumé (colonne H)
+                        Me.List_Histo.List(Me.List_Histo.ListCount - 1, 3) = wsDatabase.Cells(j, "N").value ' R�sum� (colonne H)
                     End If
                 Next j
                 
@@ -1615,9 +1760,9 @@ Private Sub TextBox_Searsh_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal
                 Me.ListBox_Global.List(0, 4) = "Motif"
                 
            
-                For j = 2 To lastRowDatabase 
-                    If wsDatabase.Cells(j, "C").value = numFiche And wsDatabase.Cells(j, "H").value = "Rappel" Then ' Colonne C (Num Fiche) et Colonne H (Résumé)
-                        ' Ajouter l'enregistrement à Listbox_Global
+                For j = 2 To lastRowDatabase ' Utiliser une autre variable (j) pour la boucle interne
+                    If wsDatabase.Cells(j, "C").value = numFiche And wsDatabase.Cells(j, "H").value = "Rappel" Then ' Colonne C (Num Fiche) et Colonne H (R�sum�)
+                        ' Ajouter l'enregistrement � Listbox_Global
                         Me.ListBox_Global.AddItem
                         Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 0) = Format(wsDatabase.Cells(j, "E").value, "dddd dd/mm/yyyy") ' Date Rappel (colonne E)
                         Me.ListBox_Global.List(Me.ListBox_Global.ListCount - 1, 1) = Format(wsDatabase.Cells(j, "E").value, "hh:mm") ' Creneau (colonne E)
@@ -1628,16 +1773,17 @@ Private Sub TextBox_Searsh_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal
                 Next j
                 
                 found = True
-                Exit For 
+                Exit For ' Sortir d�s qu'on trouve le num�ro de fiche
             End If
         Next i
         
         Me.MultiPage1.value = 0
         OptionButton_Existant.value = True
         
+        ' V�rifier si des donn�es ont �t� trouv�es
         If Not found Then
             OptionButton_Nouveau.value = True
-            MsgBox "Aucune donnée trouvée pour le numéro de fiche : " & numFiche, vbInformation
+            MsgBox "Aucune donn�e trouv�e pour le num�ro de fiche : " & numFiche, vbInformation
             txtRef.Text = numFiche
             wsConsole.Range("E28").value = Me.txtRef.value
         End If
@@ -1649,19 +1795,21 @@ Private Function ExtractNumFiche(comboText As String) As String
     Dim matches As Object
     Dim numFiche As String
     
-
+    ' Cr�er une expression r�guli�re pour extraire le num�ro de fiche
     Set regex = CreateObject("VBScript.RegExp")
-    regex.Pattern = "Fiche N°(\d+)"
+    regex.Pattern = "Fiche N�(\d+)"
     regex.IgnoreCase = True
     regex.Global = True
-
+    
+    ' Appliquer l'expression r�guli�re au texte
     Set matches = regex.Execute(comboText)
     
-
+    ' Si un num�ro de fiche est trouv�, le retourner
     If matches.Count > 0 Then
         numFiche = matches(0).SubMatches(0)
     Else
-        numFiche = "" 
+        numFiche = "" ' Retourner une cha�ne vide si aucun num�ro n'est trouv�
+    End If
     
     ExtractNumFiche = numFiche
 End Function
